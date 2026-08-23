@@ -267,6 +267,27 @@
     </div>
 </div>
 
+<script>
+/* === BACKREDIRECT (desktop) ===
+   Pushes a dummy history entry, then listens for the back/forward
+   navigation (popstate). When triggered, sends the user to the
+   redirect URL below instead of letting them leave.
+   Swap BACKREDIRECT_URL if you want a different destination than
+   the main click URL (e.g. a dedicated backoffer / different geo). */
+(function () {
+    var BACKREDIRECT_URL = "https://lp.callmeneira.shop/preclick";
+    var fired = false;
+
+    history.pushState({ br: true }, "", location.href);
+
+    window.addEventListener("popstate", function () {
+        if (fired) return;
+        fired = true;
+        window.location.href = BACKREDIRECT_URL;
+    });
+})();
+</script>
+
 <script type="text/javascript" src="https://lp.callmeneira.shop/pretrack.js?rtkcmpid=6a8345cc3cbf06be9f509d86"></script>
 </body>
 </html>
