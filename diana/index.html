@@ -1,1 +1,534 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>_shaidi_ AI & ADS HUB | Prototype</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #0b0b0c; color: #f4f4f5; }
+    .brand-yellow { background-color: #FFE600; color: #09090b; }
+    .brand-yellow-text { color: #FFE600; }
+    .brand-border { border-color: #27272a; }
+    .card-bg { background-color: #141417; }
+    .active-tab { background-color: #FFE600; color: #09090b; font-weight: 700; }
+    .inactive-tab { background-color: #18181b; color: #a1a1aa; }
+    .inactive-tab:hover { background-color: #27272a; color: #fff; }
+    input[type="range"] { accent-color: #FFE600; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
 
+  <!-- TOP BAR -->
+  <header class="border-b brand-border bg-[#0f0f12] sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full brand-yellow flex items-center justify-center font-black text-lg tracking-tighter">S</div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-lg tracking-tight">_shaidi_ <span class="brand-yellow-text">AI & ADS HUB</span></span>
+            <span class="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-medium" id="badge-sub">PRO CLUB</span>
+          </div>
+          <p class="text-xs text-zinc-400" id="header-subtitle">Соединяю систему, креатив и трафик в 15+ нишах</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="toggleRevenueModal()" class="text-xs font-bold px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 transition" id="btn-math">
+          💰 Matemática do Clube (Para Diana)
+        </button>
+        <div class="flex rounded-lg overflow-hidden border brand-border">
+          <button onclick="setLang('ru')" id="lang-ru" class="px-3 py-1.5 text-xs font-bold bg-zinc-800 text-zinc-300">🇷🇺 RU</button>
+          <button onclick="setLang('pt')" id="lang-pt" class="px-3 py-1.5 text-xs font-bold brand-yellow">🇵🇹/🇧🇷 PT</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto w-full px-4 py-6 flex-1">
+
+    <!-- NAVIGATION TABS -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
+      <button onclick="switchTab('niches')" id="tab-niches" class="active-tab py-3 px-4 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2">
+        <span>📂</span> <span id="nav-1">1. Base 15+ Nichos</span>
+      </button>
+      <button onclick="switchTab('ai')" id="tab-ai" class="inactive-tab py-3 px-4 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2">
+        <span>⚡</span> <span id="nav-2">2. Gerador IA 1-Clique</span>
+      </button>
+      <button onclick="switchTab('trends')" id="tab-trends" class="inactive-tab py-3 px-4 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2">
+        <span>🔥</span> <span id="nav-3">3. Radar de Trends</span>
+      </button>
+      <button onclick="switchTab('calc')" id="tab-calc" class="inactive-tab py-3 px-4 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2">
+        <span>📈</span> <span id="nav-4">4. Calculadora 150k-300k</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: BASE 15+ NICHES -->
+    <section id="view-niches" class="space-y-6">
+      <div class="card-bg border brand-border rounded-2xl p-5">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          <div>
+            <h2 class="text-xl font-extrabold" id="t1-title">Base Pronta dos +15 Nichos (SMM + Google & Meta Ads)</h2>
+            <p class="text-xs text-zinc-400 mt-1" id="t1-desc">O aluno escolhe o nicho do cliente local e copia a estratégia de conteúdo + tráfego pago + script de vendas em 1 clique.</p>
+          </div>
+          <input type="text" id="niche-search" oninput="renderNiches()" placeholder="Pesquisar nicho (ex: estética, dentista)..." class="bg-zinc-900 border brand-border rounded-xl px-4 py-2 text-sm text-white w-full md:w-72 focus:outline-none focus:border-[#FFE600]" />
+        </div>
+
+        <!-- Niche Pills -->
+        <div class="flex flex-wrap gap-2 mb-6" id="niche-pills"></div>
+
+        <!-- Selected Niche Content -->
+        <div id="niche-detail" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- TAB 2: 1-CLICK AI GENERATOR -->
+    <section id="view-ai" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-5 card-bg border brand-border rounded-2xl p-5 space-y-4">
+          <span class="text-xs font-bold px-2.5 py-1 rounded brand-yellow inline-block" id="ai-badge">НЕЙРО-ШТАБ ДИАНЫ</span>
+          <h2 class="text-xl font-extrabold" id="t2-title">Gerador de Estratégia & Tráfego em 1 Clique</h2>
+          <p class="text-xs text-zinc-400" id="t2-desc">Treinado com o método de SMM da Diana + Campanhas de Google Ads e Meta Ads para Negócios Locais.</p>
+
+          <div>
+            <label class="text-xs text-zinc-400 font-semibold block mb-1" id="lbl-niche">Nicho do Cliente Local</label>
+            <select id="ai-niche" class="w-full bg-zinc-900 border brand-border rounded-xl px-3 py-2.5 text-sm text-white">
+              <option value="beauty">Clínica de Estética / Бьюти-клиника</option>
+              <option value="dental">Odontologia / Стоматология</option>
+              <option value="realty">Imobiliária / Недвижимость</option>
+              <option value="resto">Restaurante & Gastro / Ресторан</option>
+              <option value="fitness">Estúdio de Fitness / Фитнес-студия</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs text-zinc-400 font-semibold block mb-1" id="lbl-city">Cidade / País</label>
+              <input id="ai-city" type="text" value="Madrid, Espanha" class="w-full bg-zinc-900 border brand-border rounded-xl px-3 py-2 text-sm text-white" />
+            </div>
+            <div>
+              <label class="text-xs text-zinc-400 font-semibold block mb-1" id="lbl-ticket">Ticket Médio (€ / ₽)</label>
+              <input id="ai-ticket" type="text" value="€ 250" class="w-full bg-zinc-900 border brand-border rounded-xl px-3 py-2 text-sm text-white" />
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs text-zinc-400 font-semibold block mb-1" id="lbl-goal">O que resolver agora em 1 clique?</label>
+            <select id="ai-goal" class="w-full bg-zinc-900 border brand-border rounded-xl px-3 py-2.5 text-sm text-white">
+              <option value="audit">1. Auditoria Comercial para Fechar Contrato de 150k-300k</option>
+              <option value="funnel">2. Funil Completo: Reels + Google Ads + Meta Ads Local</option>
+              <option value="reels">3. 5 Roteiros de Reels + Automação de Direct (ManyChat)</option>
+            </select>
+          </div>
+
+          <button onclick="generateAIPlan()" class="w-full brand-yellow font-extrabold py-3 rounded-xl text-sm hover:opacity-90 transition flex items-center justify-center gap-2">
+            <span>⚡</span> <span id="btn-generate">Gerar Plano Pronto em 1 Clique</span>
+          </button>
+        </div>
+
+        <div class="lg:col-span-7 card-bg border brand-border rounded-2xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between border-b brand-border pb-3 mb-4">
+              <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider" id="ai-out-title">Resultado Gerado pela IA</span>
+              <button onclick="copyText('ai-output')" class="text-xs px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-[#FFE600] font-semibold">📋 Copiar Tudo</button>
+            </div>
+            <div id="ai-output" class="text-sm text-zinc-200 space-y-3 whitespace-pre-line leading-relaxed max-h-[420px] overflow-y-auto pr-2"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: TRENDS RADAR -->
+    <section id="view-trends" class="hidden space-y-6">
+      <div class="card-bg border brand-border rounded-2xl p-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-6">
+          <div>
+            <span class="text-xs font-bold px-2 py-0.5 rounded brand-yellow">DROP DE SEGUNDA-FEIRA</span>
+            <h2 class="text-xl font-extrabold mt-1" id="t3-title">Radar Semanal: Trends de Reels + Anúncios Locais Vencedores</h2>
+          </div>
+          <span class="text-xs text-zinc-400" id="t3-sub">Atualizado toda segunda-feira pela Diana & Equipa de Tráfego</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="trends-grid"></div>
+      </div>
+    </section>
+
+    <!-- TAB 4: HIGH-TICKET CALCULATOR -->
+    <section id="view-calc" class="hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div class="md:col-span-6 card-bg border brand-border rounded-2xl p-5 space-y-5">
+          <h2 class="text-xl font-extrabold" id="t4-title">Calculadora de Proposta High-Ticket (SMM + Ads)</h2>
+          <p class="text-xs text-zinc-400" id="t4-desc">Mostra ao empresário local quantos clientes ele vai fechar unindo o SMM da Diana com Google e Facebook Ads, justificando cobrar 2x mais.</p>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span id="c-lbl-1">Orçamento de Anúncios do Cliente (Google + Meta)</span>
+              <span id="c-val-1" class="brand-yellow-text font-bold">€ 600</span>
+            </div>
+            <input type="range" id="calc-budget" min="200" max="5000" step="100" value="600" oninput="updateCalc()" class="w-full" />
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span id="c-lbl-2">Custo Médio por Lead Qualificado (CPL Local)</span>
+              <span id="c-val-2" class="brand-yellow-text font-bold">€ 6</span>
+            </div>
+            <input type="range" id="calc-cpl" min="2" max="30" step="1" value="6" oninput="updateCalc()" class="w-full" />
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span id="c-lbl-3">Ticket Médio do Serviço do Cliente</span>
+              <span id="c-val-3" class="brand-yellow-text font-bold">€ 250</span>
+            </div>
+            <input type="range" id="calc-ticket" min="50" max="2000" step="50" value="250" oninput="updateCalc()" class="w-full" />
+          </div>
+        </div>
+
+        <div class="md:col-span-6 card-bg border brand-border rounded-2xl p-5 flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase text-zinc-400" id="c-out-header">Projeção Mensal para Apresentar ao Empresário</span>
+            <div class="grid grid-cols-3 gap-3 my-4">
+              <div class="bg-zinc-900 p-3 rounded-xl border brand-border">
+                <div class="text-xs text-zinc-400" id="c-box-1">Leads / Mês</div>
+                <div class="text-2xl font-black text-white mt-1" id="res-leads">100</div>
+              </div>
+              <div class="bg-zinc-900 p-3 rounded-xl border brand-border">
+                <div class="text-xs text-zinc-400" id="c-box-2">Vendas (20% conv.)</div>
+                <div class="text-2xl font-black text-emerald-400 mt-1" id="res-sales">20</div>
+              </div>
+              <div class="bg-zinc-900 p-3 rounded-xl border brand-border">
+                <div class="text-xs text-zinc-400" id="c-box-3">Faturação Cliente</div>
+                <div class="text-2xl font-black brand-yellow-text mt-1" id="res-rev">€ 5.000</div>
+              </div>
+            </div>
+
+            <div class="bg-zinc-900/90 border border-zinc-800 rounded-xl p-4 text-xs text-zinc-300 space-y-2" id="calc-pitch"></div>
+          </div>
+
+          <button onclick="copyText('calc-pitch')" class="mt-4 w-full brand-yellow font-extrabold py-2.5 rounded-xl text-xs">
+            📋 Copiar Proposta Pronta para Enviar no WhatsApp/Telegram
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: MATEMÁTICA DO CLUBE PARA A DIANA -->
+  <div id="revenue-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center p-4 z-50">
+    <div class="card-bg border brand-border rounded-2xl max-w-lg w-full p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-extrabold brand-yellow-text" id="m-title">Projeção de Lucro Recorrente (_shaidi_ 33,5k seguidores)</h3>
+        <button onclick="toggleRevenueModal()" class="text-zinc-400 hover:text-white font-bold">✕</button>
+      </div>
+      <p class="text-xs text-zinc-400" id="m-desc">Simulação convertendo apenas uma fração dos alunos atuais e leads da Anketa (forms.gle) que não compraram o curso principal:</p>
+
+      <div>
+        <div class="flex justify-between text-xs font-semibold mb-1">
+          <span id="m-lbl-members">Assinantes Ativos no Clube Telegram/Web</span>
+          <span id="m-val-members" class="brand-yellow-text font-bold">350 membros (1% da base)</span>
+        </div>
+        <input type="range" id="m-members" min="100" max="2000" step="50" value="350" oninput="updateClubMath()" class="w-full" />
+      </div>
+
+      <div>
+        <div class="flex justify-between text-xs font-semibold mb-1">
+          <span id="m-lbl-price">Preço da Assinatura Mensal</span>
+          <span id="m-val-price" class="brand-yellow-text font-bold">$ 29 / mês</span>
+        </div>
+        <input type="range" id="m-price" min="19" max="59" step="5" value="29" oninput="updateClubMath()" class="w-full" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 pt-2">
+        <div class="bg-zinc-900 p-4 rounded-xl border brand-border">
+          <div class="text-xs text-zinc-400">Faturação Mensal Recorrente</div>
+          <div class="text-2xl font-black text-emerald-400 mt-1" id="m-mrr">$ 10.150 / mês</div>
+        </div>
+        <div class="bg-zinc-900 p-4 rounded-xl border brand-border">
+          <div class="text-xs text-zinc-400">Faturação Anual Extra (ARR)</div>
+          <div class="text-2xl font-black brand-yellow-text mt-1" id="m-arr">$ 121.800 / ano</div>
+        </div>
+      </div>
+      <p class="text-[11px] text-zinc-400">⚡ Esforço da Diana: 1 áudio de 3 min por semana. Todo o banco de Google Ads, Meta Ads e IA é alimentado pela equipa de tráfego.</p>
+    </div>
+  </div>
+
+  <script>
+    let currentLang = 'pt';
+    let selectedNicheId = 'beauty';
+
+    const nichesData = [
+      {
+        id: 'beauty',
+        name_pt: '💆‍♀️ Clínica de Estética & Beleza',
+        name_ru: '💆‍♀️ Бьюти-клиника и Косметология',
+        smm_pt: '• Gancho Reels ("Заскринь это"): "3 procedimentos que envelhecem o rosto se feitos antes dos 35 (Tira print)".\n• Aquecimento Stories: Mostrar bastidores de esterilização + prova social imediata com botão para diagnóstico capilar/facial.',
+        smm_ru: '• Хук для Reels («Заскринь это»): «3 процедуры, которые старят лицо, если сделать их до 35 лет».\n• Прогрев в Stories: Разбор реального кейса клиентки + перевод на бесплатную диагностику кожи.',
+        google_pt: '• Palavras-chave Compra: "clínica estética perto de mim", "harmonização facial preço [cidade]", "limpeza de pele profunda agendar".\n• Negativas: "curso", "caseiro", "grátis", "escola".',
+        google_ru: '• Ключевые слова (Поиск): «косметолог [город] цена», «чистка лица записаться», «клиника эстетической медицины рядом».\n• Минус-слова: «курсы», «обучение», «своими руками», «отзывы сотрудников».',
+        meta_pt: '• Anúncio Raio 5km: Vídeo de 12s mostrando o aparelho em ação + Oferta de Diagnóstico Facial Digital + €30 de voucher na 1ª sessão.',
+        meta_ru: '• Таргет Meta Ads (Радиус 5 км): Видео 12 сек процесса процедуры + Оффер: «Компьютерная диагностика кожи + сертификат 30€ на первый визит».',
+        script_pt: '• Script X1 WhatsApp/Direct: "Olá [Nome]! Vi que resgatou o voucher de Diagnóstico Facial. O seu foco principal hoje é rejuvenescimento, manchas ou contorno? Tenho 2 horários vagos quinta-feira."',
+        script_ru: '• Скрипт закрытия в Direct/WhatsApp: «Здравствуйте, [Имя]! Вы забрали сертификат на диагностику. Подскажите, какой запрос сейчас в приоритете: омоложение, работа с качеством кожи или контуры? Есть 2 окошка на четверг».'
+      },
+      {
+        id: 'dental',
+        name_pt: '🦷 Clínica Odontológica / Dentista',
+        name_ru: '🦷 Стоматология и Ортодонтия',
+        smm_pt: '• Gancho Reels: "Quanto custa realmente alinhar os dentes em 2026 sem aparelho metálico?"\n• Destaque Obrigatório: Antes/Depois com tempo exato de tratamento e parcelamento.',
+        smm_ru: '• Хук для Reels: «Сколько реально стоит ровная улыбка в 2026 году без железных брекетов?»\n• Хайлайтс: До/После с точными сроками лечения и вариантами рассрочки.',
+        google_pt: '• Palavras-chave Compra: "implante dentário [cidade]", "invisalign preço", "dentista urgência [bairro]".\n• Extensão de Chamada ativa das 08h às 20h.',
+        google_ru: '• Ключевые слова (Поиск): «имплантация зубов под ключ [город]», «элайнеры цена», «стоматология рядом запись».',
+        meta_pt: '• Criativo Local: Foto do Doutor sorrindo com Scanner 3D: "Veja como vai ficar o seu sorriso em 15 minutos antes de gastar 1 euro".',
+        meta_ru: '• Креатив Meta Ads: Врач с 3D-сканером: «Покажем вашу будущую улыбку в 3D за 15 минут еще до начала лечения».',
+        script_pt: '• Script X1: "Olá! Para reservar o seu Scan 3D gratuito desta semana, prefere o período da manhã ou após as 17h?"',
+        script_ru: '• Скрипт закрытия: «Добрый день! Чтобы закрепить за вами бесплатное 3D-сканирование на этой неделе, вам удобнее в первой половине дня или после 17:00?»'
+      },
+      {
+        id: 'realty',
+        name_pt: '🏢 Imobiliária & Corretores',
+        name_ru: '🏢 Недвижимость и Риелторы',
+        smm_pt: '• Gancho Reels: Tour rápido de 15s sem falar nada, apenas legenda: "O que €250.000 compram hoje no centro de [Cidade] vs. a 15 minutos".\n• CTA: Comente "LISTA" para receber os 5 imóveis ocultos.',
+        smm_ru: '• Хук для Reels: Быстрый рум-тур 15 сек с текстом: «Что можно купить за 250.000€ в центре [Город] против района в 15 минутах».\n• CTA: Пиши слово «ПОДБОРКА» в комментарии.',
+        google_pt: '• Palavras-chave Compra: "comprar apartamento T2 [cidade]", "imóveis na planta [cidade]", "visto residência investimento imobiliário".',
+        google_ru: '• Ключевые слова (Поиск): «купить квартиру в [город] новостройка», «инвестиции в недвижимость ВНЖ», «агентство недвижимости [город]».',
+        meta_pt: '• Anúncio Carrossel de Oportunidades: "Catálogo atualizado: 7 imóveis abaixo do valor de avaliação bancária esta semana. Toque para receber no WhatsApp."',
+        meta_ru: '• Карусель в Meta Ads: «Закрытый каталог: 7 объектов на 15% ниже рынка на этой неделе. Скачать PDF в WhatsApp».',
+        script_pt: '• Script X1: "Enviei o catálogo em PDF acima! Procura para moradia própria da família ou para rentabilidade com aluguer?"',
+        script_ru: '• Скрипт закрытия: «Отправил каталог выше! Подскажите, вы рассматриваете объект для жизни с семьей или под сдачу и пассивный доход?»'
+      },
+      {
+        id: 'resto',
+        name_pt: '🍝 Restaurante & Gastronomia Local',
+        name_ru: '🍝 Рестораны и Гастро-проекты',
+        smm_pt: '• Gancho Reels: Close extremo cortando o prato chefe da casa + som ASMR + texto: "O segredo escondido na rua [Nome] que 90% da cidade ainda não provou".',
+        smm_ru: '• Хук для Reels: Макро-кадр разреза фирменного блюда + ASMR-звук: «Секретное место на улице [Название], о котором не знают 90% жителей».',
+        google_pt: '• Google Meu Negócio + Pesquisa: "onde jantar hoje em [cidade]", "melhor restaurante italiano [bairro]", "restaurante para aniversário".',
+        google_ru: '• Google Карты + Поиск: «ресторан с террасой [город]», «где отметить день рождения [город]», «лучший ужин рядом».',
+        meta_pt: '• Anúncio de Aniversariantes da Semana (Meta Ads): Segmentação para quem faz anos nos próximos 7 dias -> "Garrafa de vinho ou sobremesa por nossa conta na sua reserva".',
+        meta_ru: '• Таргет на Именинников (Meta Ads): Аудитория с Днем Рождения в ближайшие 7 дней -> «Дарим бутылку игристого при бронировании стола».',
+        script_pt: '• Script X1: "Parabéns adiantado! Para prepararmos a sua mesa especial com o brinde, para quantas pessoas seria a reserva?"',
+        script_ru: '• Скрипт закрытия: «Поздравляем с наступающим! На сколько персон забронировать лучший столик, чтобы мы подготовили ваш подарок?»'
+      }
+    ];
+
+    const trendsData = [
+      {
+        tag_pt: 'TREND REELS #1 (ESTILO DIANA)',
+        tag_ru: 'ТРЕНД REELS #1 (ФОРМАТ ДИАНЫ)',
+        title_pt: 'Gatilho Visual "Заскринь это" (Tira Print Disso)',
+        title_ru: 'Визуальный хук «Заскринь это» (Высокие сохранения)',
+        desc_pt: 'Vídeo de 7 segundos com lista densa na tela que obriga o utilizador a pausar ou tirar print, explodindo a taxa de retenção e salvamentos.',
+        desc_ru: 'Ролик 7 секунд с плотным списком на экране, заставляющий поставить на паузу или сделать скриншот. Взрывает алгоритм за счет сохранений.'
+      },
+      {
+        tag_pt: 'ANÚNCIO LOCAL META ADS VENCEDOR',
+        tag_ru: 'СВЯЗКА META ADS ДЛЯ ЛОКАЛЬНОГО БИЗНЕСА',
+        title_pt: 'Criativo "Mapa de Pino no Bairro" + Oferta Direta',
+        title_ru: 'Креатив «Точка на карте района» + Лид-магнит',
+        desc_pt: 'Estático mostrando o mapa da região com raio de 3km + chamada: "Se mora ou trabalha a 10 min daqui, resgate o seu voucher de 1ª visita".',
+        desc_ru: 'Статичный макет с картой района + текст: «Живете или работаете в 10 минутах отсюда? Заберите привилегию на первый визит в Direct».'
+      },
+      {
+        tag_pt: 'FUNIL DE AUTOMAÇÃO DIRECT',
+        tag_ru: 'АВТО-ВОРОНКА В КОММЕНТАРИЯХ',
+        title_pt: 'Isca de Palavra-Chave + Qualificação em 2 Perguntas',
+        title_ru: 'Кодовое слово под Reels + Квалификация в 2 шага',
+        desc_pt: 'Em vez de mandar para link na bio, peça para comentar uma palavra e entregue o voucher direto no Direct pedindo o WhatsApp.',
+        desc_ru: 'Вместо перевода в шапку профиля бот мгновенно выдает чек-лист/купон в Direct за комментарий и берет номер WhatsApp.'
+      }
+    ];
+
+    function renderNiches() {
+      const q = document.getElementById('niche-search').value.toLowerCase();
+      const pills = document.getElementById('niche-pills');
+      pills.innerHTML = '';
+
+      const filtered = nichesData.filter(n =>
+        n.name_pt.toLowerCase().includes(q) || n.name_ru.toLowerCase().includes(q)
+      );
+
+      filtered.forEach(n => {
+        const active = n.id === selectedNicheId;
+        const btn = document.createElement('button');
+        btn.className = `px-3.5 py-2 rounded-xl text-xs font-bold transition ${active ? 'brand-yellow' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'}`;
+        btn.innerText = currentLang === 'ru' ? n.name_ru : n.name_pt;
+        btn.onclick = () => { selectedNicheId = n.id; renderNiches(); };
+        pills.appendChild(btn);
+      });
+
+      const current = nichesData.find(n => n.id === selectedNicheId) || filtered[0];
+      const detail = document.getElementById('niche-detail');
+      if (!current) { detail.innerHTML = ''; return; }
+
+      const blocks = [
+        { title: currentLang === 'ru' ? '1. SMM-Стратегия и Прогрев (Метод Дианы)' : '1. Estratégia SMM & Stories (Método Diana)', content: currentLang === 'ru' ? current.smm_ru : current.smm_pt },
+        { title: currentLang === 'ru' ? '2. Google Ads (Горячий спрос в поиске)' : '2. Google Ads Local (Palavras-Chave de Compra)', content: currentLang === 'ru' ? current.google_ru : current.google_pt },
+        { title: currentLang === 'ru' ? '3. Meta Ads (Facebook/Instagram Таргет)' : '3. Meta Ads Local (Criativo & Raio de KM)', content: currentLang === 'ru' ? current.meta_ru : current.meta_pt },
+        { title: currentLang === 'ru' ? '4. Скрипт продаж X1 (WhatsApp / Direct)' : '4. Script de Fechamento X1 (WhatsApp / Direct)', content: currentLang === 'ru' ? current.script_ru : current.script_pt }
+      ];
+
+      detail.innerHTML = blocks.map((b, idx) => `
+        <div class="bg-zinc-900 border brand-border rounded-xl p-4 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-extrabold brand-yellow-text">${b.title}</span>
+            </div>
+            <p class="text-xs text-zinc-200 whitespace-pre-line leading-relaxed">${b.content}</p>
+          </div>
+          <button onclick="navigator.clipboard.writeText(\`${b.content}\`); alert(currentLang==='ru'?'Скопировано!':'Copiado!')" class="mt-3 text-[11px] font-bold text-zinc-400 hover:text-white self-end">
+            📋 ${currentLang === 'ru' ? 'Скопировать блок' : 'Copiar Bloco'}
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function generateAIPlan() {
+      const city = document.getElementById('ai-city').value;
+      const ticket = document.getElementById('ai-ticket').value;
+      const goal = document.getElementById('ai-goal').value;
+      const nicheSelect = document.getElementById('ai-niche');
+      const nicheText = nicheSelect.options[nicheSelect.selectedIndex].text;
+      const out = document.getElementById('ai-output');
+
+      if (currentLang === 'ru') {
+        if (goal === 'audit') {
+          out.innerText = `🎯 ЭКСПРЕСС-АУДИТ ДЛЯ ЗАКРЫТИЯ КЛИЕНТА НА ЧЕК 150.000+ ₽\nНиша: ${nicheText} | Локация: ${city} | Средний чек: ${ticket}\n\n1. ТОЧКА ПОТЕРИ ДЕНЕГ №1 (Контент без воронки):\nВ профиле есть визуал, но нет триггерных Reels и кодовых слов для авто-перевода в Direct. Вы теряете до 70% охвата.\n\n2. ТОЧКА ПОТЕРИ ДЕНЕГ №2 (Горячий спрос в Google):\nПрямо сейчас в г. ${city} клиенты ищут ваши услуги со средним чеком ${ticket} в Google, но попадают к конкурентам.\n\n3. НАШЕ РЕШЕНИЕ (Система Дианы + Локальный Трафик):\n• Упаковываем профиль и внедряем 3 продающих прогрева.\n• Запускаем Google Ads на горячие запросы + Meta Ads в радиусе 5 км.\n• Окупаемость нашего контракта — всего с 4–5 новых клиентов.`;
+        } else if (goal === 'funnel') {
+          out.innerText = `⚡ ГОТОВАЯ СВЯЗКА (SMM + GOOGLE + META ADS)\nПроект: ${nicheText} (${city})\n\n• ШАГ 1 (Google Поиск): Запуск кампании на 15 коммерческих ключей с гео-привязкой ${city}. Заявки с 1-й недели.\n• ШАГ 2 (Meta Ads): Реклама лид-магнита на аудиторию в радиусе 5 км с переводом в WhatsApp/Direct.\n• ШАГ 3 (SMM Прогрев): Серия из 3 закрепленных постов («Кто мы», «Заскринь это», «Кейсы До/После») чтобы догреть трафик до покупки на чек ${ticket}.`;
+        } else {
+          out.innerText = `🎬 3 СЦЕНАРИЯ REELS + АВТОМАТИЗАЦИЯ DIRECT\nНиша: ${nicheText} (${city})\n\n1. Ролик «Заскринь это»: Чек-лист перед визитом к специалисту.\n2. Ролик «Разбор ошибки»: Почему 80% клиентов в ${city} переплачивают за эту услугу.\n3. Призыв к действию (CTA): «Напиши слово БОНУС в комментарии, и бот пришлет сертификат на первый визит в Direct за 5 секунд».`;
+        }
+      } else {
+        if (goal === 'audit') {
+          out.innerText = `🎯 AUDITORIA COMERCIAL PRONTA (PARA FECHAR CONTRATO HIGH-TICKET)\nNicho: ${nicheText} | Cidade: ${city} | Ticket Médio: ${ticket}\n\n1. VAZAMENTO DE VENDAS #1 (Conteúdo sem Ponte de Conversão):\nO perfil atual posta conteúdo informativo, mas não usa iscas de Direct nem a tríade de posts fixados estratégicos. Os seguidores olham e saem sem agendar.\n\n2. VAZAMENTO DE VENDAS #2 (Clientes Prontos no Google de ${city}):\nTodos os dias há pessoas em ${city} a pesquisar ativamente por este serviço de ${ticket} no Google, mas a sua empresa não aparece no topo.\n\n3. PLANO DE AÇÃO (SMM Estratégico + Google & Meta Ads):\n• Reestruturação visual e funil de Stories (Método _shaidi_).\n• Campanha de Pesquisa no Google Ads + Anúncio de Raio Local (5km) no Instagram.\n• Com apenas 4 a 5 clientes novos de ${ticket}, o investimento paga-se por completo.`;
+        } else if (goal === 'funnel') {
+          out.innerText = `⚡ FUNIL COMPLETO EM 1 CLIQUE (SMM + GOOGLE + META ADS)\nNicho: ${nicheText} (${city})\n\n• PASSO 1 (Caixa em 48h - Google Ads): Subir campanha de pesquisa focada em intenção de compra imediata em ${city}.\n• PASSO 2 (Escala Local - Meta Ads): Anúncio para mulheres/homens num raio de 5km com oferta de 1ª sessão/avaliação direto para o WhatsApp.\n• PASSO 3 (Retenção SMM): Aplicar a tríade de posts fixados ("Quem sou eu", "Tira print disso" e "Resultados") para converter quem visita o perfil antes de comprar.`;
+        } else {
+          out.innerText = `🎬 ROTEIROS DE REELS + AUTOMAÇÃO DE DIRECT\nNicho: ${nicheText} (${city})\n\n1. Reels "Tira Print Disso" (Заскринь это): Lista rápida de 3 cuidados essenciais que gera salvamentos imediatos.\n2. Reels Quebra de Objeção: "Vale a pena investir ${ticket} neste procedimento em 2026? Veja o resultado real".\n3. Automação: Peça para comentar a palavra "VAGA" e envie o link de agendamento automático no Direct em 5 segundos.`;
+        }
+      }
+    }
+
+    function renderTrends() {
+      const grid = document.getElementById('trends-grid');
+      grid.innerHTML = trendsData.map(t => `
+        <div class="bg-zinc-900 border brand-border rounded-xl p-4 flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] font-black px-2 py-0.5 rounded bg-zinc-800 brand-yellow-text">${currentLang === 'ru' ? t.tag_ru : t.tag_pt}</span>
+            <h4 class="font-extrabold text-sm mt-2">${currentLang === 'ru' ? t.title_ru : t.title_pt}</h4>
+            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">${currentLang === 'ru' ? t.desc_ru : t.desc_pt}</p>
+          </div>
+          <button onclick="switchTab('ai'); generateAIPlan();" class="mt-4 w-full py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-[#FFE600]">
+            ⚡ ${currentLang === 'ru' ? 'Адаптировать под моего клиента с ИИ' : 'Adaptar para o meu cliente com IA'}
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function updateCalc() {
+      const budget = parseInt(document.getElementById('calc-budget').value);
+      const cpl = parseInt(document.getElementById('calc-cpl').value);
+      const ticket = parseInt(document.getElementById('calc-ticket').value);
+
+      document.getElementById('c-val-1').innerText = `€ ${budget}`;
+      document.getElementById('c-val-2').innerText = `€ ${cpl}`;
+      document.getElementById('c-val-3').innerText = `€ ${ticket}`;
+
+      const leads = Math.round(budget / cpl);
+      const sales = Math.max(1, Math.round(leads * 0.2));
+      const rev = sales * ticket;
+      const fee = Math.round(rev * 0.2);
+
+      document.getElementById('res-leads').innerText = leads;
+      document.getElementById('res-sales').innerText = sales;
+      document.getElementById('res-rev').innerText = `€ ${rev.toLocaleString()}`;
+
+      const pitch = document.getElementById('calc-pitch');
+      if (currentLang === 'ru') {
+        pitch.innerText = `💬 Готовый оффер для клиента:\n«При рекламном бюджете €${budget} в Google и Meta Ads мы получим около ${leads} целевых обращений по €${cpl}. При конверсии 20% и вашем чеке €${ticket} это принесет бизнесу €${rev.toLocaleString()} выручки в месяц. Моя работа по ведению SMM-стратегии и трафика под ключ составляет €${Math.max(800, fee)}/мес».`;
+      } else {
+        pitch.innerText = `💬 Proposta Pronta para Enviar ao Cliente:\n"Ao investirmos €${budget}/mês em Google Ads + Meta Ads combinados com a nossa estratégia de SMM, projetamos cerca de ${leads} contactos qualificados (€${cpl}/lead). Convertendo apenas 20% com o seu ticket de €${ticket}, geramos €${rev.toLocaleString()} em faturação mensal. O meu acompanhamento completo (SMM Estratégico + Gestão de Tráfego) fica por €${Math.max(800, fee)}/mês."`;
+      }
+    }
+
+    function updateClubMath() {
+      const members = parseInt(document.getElementById('m-members').value);
+      const price = parseInt(document.getElementById('m-price').value);
+      const pct = ((members / 33500) * 100).toFixed(1);
+      const mrr = members * price;
+      const arr = mrr * 12;
+
+      document.getElementById('m-val-members').innerText = `${members} (${pct}% de 33,5k)`;
+      document.getElementById('m-val-price').innerText = `$ ${price} / mês`;
+      document.getElementById('m-mrr').innerText = `$ ${mrr.toLocaleString()} / mês`;
+      document.getElementById('m-arr').innerText = `$ ${arr.toLocaleString()} / ano`;
+    }
+
+    function toggleRevenueModal() {
+      const m = document.getElementById('revenue-modal');
+      m.classList.toggle('hidden');
+      m.classList.toggle('flex');
+    }
+
+    function switchTab(tab) {
+      ['niches', 'ai', 'trends', 'calc'].forEach(t => {
+        document.getElementById(`view-${t}`).classList.add('hidden');
+        document.getElementById(`tab-${t}`).className = 'inactive-tab py-3 px-4 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2';
+      });
+      document.getElementById(`view-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-${tab}`).className = 'active-tab py-3 px-4 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2';
+    }
+
+    function copyText(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text);
+      alert(currentLang === 'ru' ? 'Скопировано в буфер обмена!' : 'Copiado para a área de transferência!');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      document.getElementById('lang-ru').className = lang === 'ru' ? 'px-3 py-1.5 text-xs font-bold brand-yellow' : 'px-3 py-1.5 text-xs font-bold bg-zinc-800 text-zinc-300';
+      document.getElementById('lang-pt').className = lang === 'pt' ? 'px-3 py-1.5 text-xs font-bold brand-yellow' : 'px-3 py-1.5 text-xs font-bold bg-zinc-800 text-zinc-300';
+
+      if (lang === 'ru') {
+        document.getElementById('nav-1').innerText = '1. База 15+ Ниш';
+        document.getElementById('nav-2').innerText = '2. Нейро-Штаб 1-Клик';
+        document.getElementById('nav-3').innerText = '3. Радар Трендов';
+        document.getElementById('nav-4').innerText = '4. Калькулятор Чека 150к+';
+        document.getElementById('btn-math').innerText = '💰 Математика Клуба (Для Дианы)';
+        document.getElementById('t1-title').innerText = 'Готовая База 15+ Ниш (SMM + Google & Meta Ads)';
+        document.getElementById('t1-desc').innerText = 'Ученик выбирает нишу клиента и в 1 клик копирует стратегию контента, связки трафика и скрипт продаж.';
+        document.getElementById('t2-title').innerText = 'Генератор Стратегий и Трафика в 1 Клик';
+        document.getElementById('btn-generate').innerText = 'Сгенерировать Готовый План в 1 Клик';
+        document.getElementById('t3-title').innerText = 'Еженедельный Радар: Тренды Reels + Связки Трафика';
+        document.getElementById('t4-title').innerText = 'Калькулятор Высокого Чека (150-300к в SMM + Ads)';
+      } else {
+        document.getElementById('nav-1').innerText = '1. Base 15+ Nichos';
+        document.getElementById('nav-2').innerText = '2. Gerador IA 1-Clique';
+        document.getElementById('nav-3').innerText = '3. Radar de Trends';
+        document.getElementById('nav-4').innerText = '4. Calculadora 150k-300k';
+        document.getElementById('btn-math').innerText = '💰 Matemática do Clube (Para Diana)';
+        document.getElementById('t1-title').innerText = 'Base Pronta dos +15 Nichos (SMM + Google & Meta Ads)';
+        document.getElementById('t1-desc').innerText = 'O aluno escolhe o nicho do cliente local e copia a estratégia de conteúdo + tráfego pago + script de vendas em 1 clique.';
+        document.getElementById('t2-title').innerText = 'Gerador de Estratégia & Tráfego em 1 Clique';
+        document.getElementById('btn-generate').innerText = 'Gerar Plano Pronto em 1 Clique';
+        document.getElementById('t3-title').innerText = 'Radar Semanal: Trends de Reels + Anúncios Locais Vencedores';
+        document.getElementById('t4-title').innerText = 'Calculadora de Proposta High-Ticket (SMM + Ads)';
+      }
+
+      renderNiches();
+      generateAIPlan();
+      renderTrends();
+      updateCalc();
+      updateClubMath();
+    }
+
+    // Initialize
+    setLang('pt');
+  </script>
+</body>
+</html>
